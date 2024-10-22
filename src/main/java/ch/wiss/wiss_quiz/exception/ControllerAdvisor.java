@@ -1,40 +1,85 @@
 package ch.wiss.wiss_quiz.exception;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-@RestControllerAdvice
-public class ControllerAdvisor {
+/**
+ * This class handles Exceptions thrown by the application and returns well
+ * formed JSON responses instead.
+ * 
+ * @author Patrick Meier
+ *
+ */
+@ControllerAdvice
+public class ControllerAdvisor extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(CategoryCouldNotBeSavedException.class)
-    public ResponseEntity<String> handleCategoryCouldNotBeSavedException(CategoryCouldNotBeSavedException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+	@Override
+	protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex,
+			HttpHeaders headers, HttpStatus status, WebRequest request) {
+		return createDefaultErrorResponse(ex.getMessage());
+	}
 
-    @ExceptionHandler(CategoryLoadException.class)
-    public ResponseEntity<String> handleCategoryLoadException(CategoryLoadException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+	@Override
+	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+			HttpHeaders headers, HttpStatus status, WebRequest request) {
+		Map<String, String> errors = new HashMap<>();
+		ex.getBindingResult().getAllErrors().forEach((error) -> {
+			String fieldName = ((FieldError) error).getField();
+			String errorMessage = error.getDefaultMessage();
+			errors.put(fieldName, errorMessage);
+		});
 
-    @ExceptionHandler(CategoryNotFoundException.class)
-    public ResponseEntity<String> handleCategoryNotFoundException(CategoryNotFoundException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
-    }
+		return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+	}
 
-    @ExceptionHandler(QuestionCouldNotBeSavedException.class)
-    public ResponseEntity<String> handleQuestionCouldNotBeSavedException(QuestionCouldNotBeSavedException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+	@ExceptionHandler(AnswerCouldNotBeSavedException.class)
+	public ResponseEntity<Object> handleAnswerCouldNotBeSavedException(AnswerCouldNotBeSavedException ex,
+			WebRequest request) {
+		return createDefaultErrorResponse(ex.getMessage());
+	}
 
-    @ExceptionHandler(AnswerCouldNotBeSavedException.class)
-    public ResponseEntity<String> handleAnswerCouldNotBeSavedException(AnswerCouldNotBeSavedException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+	@ExceptionHandler(CategoryCouldNotBeSavedException.class)
+	public ResponseEntity<Object> handleCategoryCouldNotBeSavedException(CategoryCouldNotBeSavedException ex,
+			WebRequest request) {
+		return createDefaultErrorResponse(ex.getMessage());
+	}
 
-    @ExceptionHandler(QuestionLoadException.class)
-    public ResponseEntity<String> handleQuestionLoadException(QuestionLoadException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+	@ExceptionHandler(CategoryLoadException.class)
+	public ResponseEntity<Object> handleCategoryLoadException(CategoryLoadException ex, WebRequest request) {
+		return createDefaultErrorResponse(ex.getMessage());
+	}
+
+	@ExceptionHandler(CategoryNotFoundException.class)
+	public ResponseEntity<Object> handleCategoryNotFoundException(CategoryNotFoundException ex, WebRequest request) {
+		return createDefaultErrorResponse(ex.getMessage());
+	}
+
+	@ExceptionHandler(QuestionCouldNotBeSavedException.class)
+	public ResponseEntity<Object> handleQuestionCouldNotBeSavedException(QuestionCouldNotBeSavedException ex,
+			WebRequest request) {
+		return createDefaultErrorResponse(ex.getMessage());
+	}
+
+	@ExceptionHandler(QuestionLoadException.class)
+	public ResponseEntity<Object> handleQuestionLoadException(QuestionLoadException ex, WebRequest request) {
+		return createDefaultErrorResponse(ex.getMessage());
+	}
+
+	private ResponseEntity<Object> createDefaultErrorResponse(String exceptionMessage) {
+		Map<String, String> errors = new HashMap<>();
+		errors.put("error", exceptionMessage);
+
+		return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+	}
 }

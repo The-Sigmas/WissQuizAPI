@@ -1,11 +1,14 @@
 package ch.wiss.wiss_quiz.exception;
 
+/**
+ * This Exception is thrown when a list of {@link Category} objects could not be
+ * loaded.
+ * 
+ * @author Patrick Meier
+ *
+ */
 public class CategoryLoadException extends RuntimeException {
-    public CategoryLoadException(String message) {
-        super(message);
-    }
-
-    public CategoryLoadException(String message, Throwable cause) {
-        super(message, cause);
-    }
+	public CategoryLoadException() {
+		super("Categories could not be loaded.");
+	}
 }
