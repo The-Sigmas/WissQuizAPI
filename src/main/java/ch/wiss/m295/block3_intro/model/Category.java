@@ -11,7 +11,7 @@ public class Category {
   private long id;
 
   @NonNull
-  @NotBlank(message = "Kategory name ist Pflicht")
+  @NotBlank(message = "Category name ist Pflicht")
   private String name;
 
   public long getId() {

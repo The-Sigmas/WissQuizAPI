@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ch.wiss.m295.block3_intro.model.Category;
 import ch.wiss.m295.block3_intro.repositories.CategoryRepository;
 import ch.wiss.wiss_quiz.exception.CategoryCouldNotBeSavedException;
+import jakarta.validation.Valid;
 
 /**
  * Controller für die Verwaltung von Kategorien.
@@ -53,7 +54,7 @@ public class CategoryController {
      * @return ResponseEntity, das die erstellte Kategorie enthält.
      */
     @PostMapping("/")
-    public ResponseEntity<Category> createCategory(@RequestBody Category category) {
+    public ResponseEntity<Category> createCategory(@Valid @RequestBody Category category) {
         // Ausgabe der Kategorie, die erstellt werden soll, zu Debug-Zwecken
         System.out.println("Creating category: " + category);
 

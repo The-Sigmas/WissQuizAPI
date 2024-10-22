@@ -27,6 +27,7 @@ public class Question {
   private Category category;
 
   @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
+  @NotBlank
   private List<Answer> answers = new ArrayList<>();
 
   public void setId(long id) {
@@ -42,6 +43,7 @@ public class Question {
   }
 
   @Size(min = 3, max = 3, message = "Eine frage muss genau 3 antworten haben")
+  @NotBlank
   public List<Answer> getAnswers() {
     return answers;
   }

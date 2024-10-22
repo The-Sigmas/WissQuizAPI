@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ch.wiss.m295.block3_intro.model.Question;
 import ch.wiss.m295.block3_intro.repositories.QuestionRepository;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 
 
 @RestController
