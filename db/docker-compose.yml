@@ -1,0 +1,6 @@
+services:
+
+  mysql-rest:
+    image: mysql
+    ports:
+      - 3306:3306
